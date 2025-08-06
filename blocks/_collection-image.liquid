@@ -39,7 +39,7 @@
     {{
       block.settings.collection.featured_image
       | image_url: width: 1000
-      | image_tag: preload: true, class: 'collection-image__featured-image', widths: widths, sizes: sizes
+      | image_tag: preload: true, class: 'collection-image__featured-image', widths: widths, sizes: sizes, alt: block.settings.collection.featured_image.alt | escape
     }}
   </div>
 {% endif %}

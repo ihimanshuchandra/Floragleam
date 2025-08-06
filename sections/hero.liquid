@@ -168,7 +168,7 @@
         width: section.settings.image_1.width,
         widths: widths,
         height: section.settings.image_1.height,
-        alt: '',
+        alt: section.settings.image_1.alt | escape,
         class: 'hero__image',
         sizes: sizes
     }}
@@ -181,7 +181,7 @@
         width: section.settings.image_2.width,
         widths: widths,
         height: section.settings.image_2.height,
-        alt: '',
+        alt: section.settings.image_2.alt | escape,
         class: 'hero__image',
         sizes: sizes
     }}

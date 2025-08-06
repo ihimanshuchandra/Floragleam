@@ -140,7 +140,7 @@
         {{
           video_preview_image
           | image_url: width: 1946
-          | image_tag: widths: widths, sizes: sizes, loading: loading, class: 'deferred-media__poster-image'
+          | image_tag: widths: widths, sizes: sizes, loading: loading, class: 'deferred-media__poster-image', alt: video_preview_image.alt | escape
         }}
 
         <span class="deferred-media__poster-icon icon-play">
@@ -191,7 +191,7 @@
     style="{%- if video_style -%}{{ video_style }} {%- endif -%}--video-placeholder-width: {{ block.settings.custom_width | default: 100 }}%;"
   >
     {% if video_preview_image != blank and video_autoplay == false %}
-      {{ video_preview_image | image_url: width: 1946 | image_tag: widths: widths, sizes: sizes, loading: loading }}
+      {{ video_preview_image | image_url: width: 1946 | image_tag: widths: widths, sizes: sizes, loading: loading, alt: video_preview_image.alt | escape }}
     {% else %}
       {{ 'hero-apparel-3' | placeholder_svg_tag }}
     {% endif %}

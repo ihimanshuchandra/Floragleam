@@ -85,7 +85,8 @@
         height: block.settings.image.height,
         class: 'image-block__image',
         sizes: sizes,
-        loading: loading
+        loading: loading,
+        alt: image_source.alt | escape
     }}
   </div>
 {% else %}

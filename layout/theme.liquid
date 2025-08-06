@@ -4,6 +4,15 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    <!-- Resource hints for performance optimization -->
+    <link rel="preconnect" href="https://cdn.shopify.com">
+    <link rel="dns-prefetch" href="https://cdn.shopify.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Browser caching optimization -->
+    <meta http-equiv="Cache-Control" content="max-age=31536000">
+    
     {%- render 'stylesheets' -%}
 
     {%- if settings.favicon != blank -%}

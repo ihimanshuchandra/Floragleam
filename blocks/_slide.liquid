@@ -42,13 +42,13 @@
           {{
             block.settings.image_1
             | image_url: width: 3840
-            | image_tag: height: height, sizes: sizes, widths: widths, loading: 'eager', class: 'slide__image', fetchpriority: 'high'
+            | image_tag: height: height, sizes: sizes, widths: widths, loading: 'eager', class: 'slide__image', fetchpriority: 'high', alt: block.settings.image_1.alt | escape
           }}
         {%- else -%}
           {{
             block.settings.image_1
             | image_url: width: 3840
-            | image_tag: height: height, widths: widths, loading: 'lazy', class: 'slide__image', sizes: lazy_sizes
+            | image_tag: height: height, widths: widths, loading: 'lazy', class: 'slide__image', sizes: lazy_sizes, alt: block.settings.image_1.alt | escape
           }}
         {%- endif -%}
       {%- else -%}
@@ -70,7 +70,8 @@
               widths: widths,
               loading: loading_poster,
               class: 'slide__video-poster',
-              fetchpriority: fetch_priority_poster
+              fetchpriority: fetch_priority_poster,
+              alt: block.settings.video_1.alt | escape
           }}
         {%- endif -%}
         {{
