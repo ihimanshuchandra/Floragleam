@@ -13,6 +13,10 @@
     <!-- Browser caching optimization -->
     <meta http-equiv="Cache-Control" content="max-age=31536000">
     
+    <!-- Preload critical resources for faster LCP -->
+    <link rel="preload" href="{{ 'critical.js' | asset_url }}" as="script">
+    <link rel="preload" href="{{ 'base.css' | asset_url }}" as="style">
+    
     {%- render 'stylesheets' -%}
 
     {%- if settings.favicon != blank -%}
@@ -33,7 +37,6 @@
 
     {%- render 'meta-tags' -%}
     {%- render 'fonts' -%}
-    {%- render 'scripts' -%}
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
@@ -75,5 +78,8 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+    
+    <!-- Non-critical scripts loaded at bottom for better performance -->
+    {%- render 'scripts' -%}
   </body>
 </html>
