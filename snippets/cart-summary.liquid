@@ -84,18 +84,27 @@
 </div>
 
 <div class="cart__ctas">
-  <button
-    type="submit"
-    id="checkout"
-    class="cart__checkout-button button"
-    name="checkout"
-    {% if cart == empty %}
-      disabled
+  {% if customer %}
+    <!-- Customer is logged in, proceed to checkout -->
+    <button type="submit" id="checkout" class="cart__checkout-button button" form="cart-form">
+      {{ 'content.checkout' | t }}
+    </button>
+  {% else %}
+    <!-- Check if guest checkout is allowed -->
+    {% assign guest_checkout_allowed = settings.allow_guest_checkout | default: true %}
+    
+    {% if guest_checkout_allowed %}
+      <!-- Show login modal or allow guest checkout -->
+      <button type="button" class="cart__checkout-button button" onclick="handleCheckout()">
+        {{ 'content.checkout' | t }}
+      </button>
+    {% else %}
+      <!-- Require login -->
+      <button type="button" class="cart__checkout-button button" onclick="showLoginModal()">
+        Login to Checkout
+      </button>
     {% endif %}
-    form="cart-form"
-  >
-    {{ 'content.checkout' | t }}
-  </button>
+  {% endif %}
 
   {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
     <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
@@ -103,6 +112,26 @@
     </div>
   {% endif %}
 </div>
+
+<script>
+function handleCheckout() {
+  // Check if user has chosen guest checkout before
+  const guestCheckout = localStorage.getItem('guest_checkout');
+  const guestCheckoutTime = localStorage.getItem('guest_checkout_time');
+  const currentTime = Date.now();
+  
+  // Guest checkout preference expires after 24 hours
+  const guestCheckoutExpiry = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+  
+  if (guestCheckout === 'true' && guestCheckoutTime && (currentTime - parseInt(guestCheckoutTime)) < guestCheckoutExpiry) {
+    // User previously chose guest checkout, proceed directly
+    window.location.href = '/checkout';
+  } else {
+    // Show login modal
+    showLoginModal();
+  }
+}
+</script>
 
 {% stylesheet %}
   .cart-actions {

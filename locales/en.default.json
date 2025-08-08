@@ -277,5 +277,15 @@
       "sold_out": "Sold out",
       "unavailable": "Unavailable"
     }
+  },
+  "checkout": {
+    "login_required": "Login Required",
+    "login_message": "Please login or create an account to proceed with checkout",
+    "existing_customer": "Existing Customer",
+    "new_customer": "New Customer",
+    "login": "Login",
+    "create_account": "Create Account",
+    "continue_as_guest": "Continue as Guest",
+    "or_continue_as_guest": "Or continue as guest:"
   }
 }

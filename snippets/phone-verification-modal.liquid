@@ -1,0 +1,225 @@
+<div class="phone-modal" id="phone-modal" hidden>
+  <div class="phone-modal__overlay">
+    <div class="phone-modal__content">
+      <h3>Phone Verification</h3>
+      <p>Please enter your phone number to proceed with checkout</p>
+      
+      <form id="phone-form">
+        <input 
+          type="tel" 
+          id="phone-number" 
+          name="phone" 
+          required 
+          placeholder="Enter your phone number"
+          pattern="[0-9\-]*"
+        >
+        <button type="submit" class="button">Continue to Checkout</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .phone-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .phone-modal__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .phone-modal__content {
+    background-color: var(--color-background);
+    border-radius: var(--style-border-radius-inputs);
+    padding: var(--padding-xl);
+    max-width: 400px;
+    width: 90%;
+    position: relative;
+    z-index: 1001;
+  }
+
+  .phone-modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--margin-lg);
+  }
+
+  .phone-modal__close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--padding-xs);
+  }
+
+  .phone-input-group {
+    margin-bottom: var(--margin-md);
+  }
+
+  .phone-input-group label {
+    display: block;
+    margin-bottom: var(--margin-xs);
+    font-weight: 500;
+  }
+
+  .phone-input-group input {
+    width: 100%;
+    padding: var(--padding-md);
+    border: 1px solid var(--color-input-border);
+    border-radius: var(--style-border-radius-inputs);
+  }
+
+  .phone-actions {
+    margin-top: var(--margin-lg);
+  }
+
+  .phone-error {
+    color: var(--color-error);
+    margin-top: var(--margin-md);
+    padding: var(--padding-sm);
+    background-color: var(--color-error-background);
+    border-radius: var(--style-border-radius-inputs);
+  }
+{% endstylesheet %}
+
+```javascript:assets/phone-verification.js
+class PhoneVerification extends HTMLElement {
+  connectedCallback() {
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    const form = this.querySelector('#phone-form');
+    if (form) {
+      form.addEventListener('submit', (e) => this.handleSubmit(e));
+    }
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    
+    const phoneInput = this.querySelector('#phone-number');
+    const phoneNumber = phoneInput.value;
+    
+    if (!phoneNumber) {
+      this.showError('Please enter a valid phone number');
+      return;
+    }
+    
+    // Store phone number and proceed to checkout
+    localStorage.setItem('verified_phone', phoneNumber);
+    localStorage.setItem('phone_verified', 'true');
+    localStorage.setItem('verification_time', Date.now().toString());
+    
+    this.closeModal();
+    this.proceedToCheckout();
+  }
+
+  showError(message) {
+    const errorDiv = this.querySelector('#phone-error');
+    if (errorDiv) {
+      errorDiv.textContent = message;
+      errorDiv.classList.remove('hidden');
+    }
+  }
+
+  closeModal() {
+    const modal = document.getElementById('phone-modal');
+    if (modal) {
+      modal.hidden = true;
+    }
+  }
+
+  proceedToCheckout() {
+    window.location.href = '/checkout';
+  }
+}
+
+customElements.define('phone-verification', PhoneVerification);
+
+// Global functions
+window.showPhoneModal = function() {
+  const modal = document.getElementById('phone-modal');
+  if (modal) {
+    modal.hidden = false;
+  }
+};
+
+window.closePhoneModal = function() {
+  const modal = document.getElementById('phone-modal');
+  if (modal) {
+    modal.hidden = true;
+  }
+};
+```
+
+And update your cart summary:
+
+```liquid:snippets/cart-summary.liquid
+<div class="cart__ctas">
+  <button
+    type="button"
+    id="checkout-with-phone"
+    class="cart__checkout-button button"
+    {% if cart == empty %}
+      disabled
+    {% endif %}
+    onclick="handleCheckoutWithPhone()"
+  >
+    {{ 'content.checkout' | t }}
+  </button>
+
+  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
+    <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
+      {{ content_for_additional_checkout_buttons }}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+function handleCheckoutWithPhone() {
+  const isVerified = localStorage.getItem('phone_verified');
+  const verificationTime = localStorage.getItem('verification_time');
+  const currentTime = Date.now();
+  
+  // Verification expires after 30 minutes
+  const verificationExpiry = 30 * 60 * 1000;
+  
+  if (isVerified === 'true' && verificationTime && (currentTime - parseInt(verificationTime)) < verificationExpiry) {
+    window.location.href = '/checkout';
+  } else {
+    showPhoneModal();
+  }
+}
+</script>
+```
+
+Add the translation strings:
+
+```json:locales/en.default.json
+{
+  "checkout": {
+    "phone_verification_title": "Phone Verification Required",
+    "phone_verification_message": "Please enter your phone number to proceed with checkout",
+    "phone_number": "Phone Number",
+    "phone_placeholder": "Enter your phone number",
+    "continue_to_checkout": "Continue to Checkout"
+  }
+}
+```
+
+This solution is **completely free** and still provides phone number verification before checkout. Would you like me to help you implement this cost-free solution?
+

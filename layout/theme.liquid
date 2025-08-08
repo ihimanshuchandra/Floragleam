@@ -79,7 +79,11 @@
       {% render 'quick-add-modal' %}
     {% endif %}
     
+    {% render 'login-modal' %}
+    
     <!-- Non-critical scripts loaded at bottom for better performance -->
     {%- render 'scripts' -%}
+    
+    <script src="{{ 'login-modal.js' | asset_url }}"></script>
   </body>
 </html>
